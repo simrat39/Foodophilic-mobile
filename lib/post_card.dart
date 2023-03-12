@@ -1,7 +1,9 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_social_media/model/Post.dart';
 import 'package:food_social_media/pages/profile.dart';
+import 'package:food_social_media/services/avatar_factory.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -34,9 +36,11 @@ class PostCard extends StatelessWidget {
                     ),
                   },
                   child: CircleAvatar(
-                    foregroundImage: Image.asset(
-                      'assets/pfp.png',
-                    ).image,
+                    child: SvgPicture.string(
+                      AvatarFactory.getAvatar(
+                        post.userID,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(

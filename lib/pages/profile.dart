@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_social_media/model/Post.dart';
 import 'package:food_social_media/model/User.dart';
 import 'package:food_social_media/post_card.dart';
+import 'package:food_social_media/services/avatar_factory.dart';
 import 'package:food_social_media/services/post_service.dart';
 
 class Profile extends ConsumerStatefulWidget {
@@ -79,27 +81,29 @@ class _ProfileState extends ConsumerState<Profile> {
                                 height: 120,
                                 width: 120,
                                 child: CircleAvatar(
-                                  foregroundImage: Image.asset(
-                                    'assets/pfp.png',
-                                  ).image,
+                                  child: SvgPicture.string(
+                                    AvatarFactory.getAvatar(
+                                      widget.uid,
+                                    ),
+                                  ),
                                 ),
                               ),
                               if (widget.isOwner)
-                              OutlinedButton(
-                                onPressed: () {
-                                  debugPrint("ha");
-                                },
-                                child: Text(
-                                  "Edit Profile",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleSmall!
-                                      .copyWith(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
-                              )
+                                OutlinedButton(
+                                  onPressed: () {
+                                    debugPrint("ha");
+                                  },
+                                  child: Text(
+                                    "Edit Profile",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                )
                             ],
                           ),
                         ),

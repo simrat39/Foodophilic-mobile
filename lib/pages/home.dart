@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_social_media/main.dart';
 import 'package:food_social_media/pages/post_page.dart';
 import 'package:food_social_media/pages/profile.dart';
 import 'package:food_social_media/post_card.dart';
+import 'package:food_social_media/services/avatar_factory.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -40,9 +42,11 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                 children: [
                   InkWell(
                     child: CircleAvatar(
-                      foregroundImage: Image.asset(
-                        'assets/pfp.png',
-                      ).image,
+                      child: SvgPicture.string(
+                        AvatarFactory.getAvatar(
+                        ref.read(userProvider).uid,
+                        ),
+                      ),
                     ),
                     onTap: () => {
                       Navigator.of(context).push(
