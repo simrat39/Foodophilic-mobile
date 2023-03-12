@@ -44,7 +44,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                     child: CircleAvatar(
                       child: SvgPicture.string(
                         AvatarFactory.getAvatar(
-                        ref.read(userProvider).uid,
+                          ref.read(userProvider).uid,
                         ),
                       ),
                     ),
@@ -102,62 +102,71 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
           ),
         ),
       ),
-      body: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          var posts = ref.watch(globalPostNotifer).posts;
-
-          return Builder(
-            builder: (BuildContext context) {
-              return ListView(
-                padding: const EdgeInsets.only(
-                  bottom: 8,
-                  left: 16,
-                  right: 16,
-                  top: 8,
-                ),
-                children: [
-                  Builder(builder: (context) {
-                    if (_tags.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return Wrap(alignment: WrapAlignment.start, children: [
-                      ..._tags
-                          .map(
-                            (e) => Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: FilterChip(
-                                label: Text(e),
-                                selected: true,
-                                onSelected: (bool value) {
-                                  setState(() {
-                                    _tags.remove(e);
-
-                                    if (_tags.isNotEmpty) {
-                                      ref
-                                          .read(globalPostNotifer)
-                                          .setPostsWithTags(_tags);
-                                    } else {
-                                      ref.read(globalPostNotifer).setPosts();
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                          )
-                          .toList()
-                    ]);
-                  }),
-                  ...posts
-                      .map(
-                        (e) => PostCard(post: e),
-                      )
-                      .toList()
-                ],
-              );
-            },
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          if (_tags.isEmpty) {
+            return ref.read(globalPostNotifer).setPosts();
+          } else {
+            return ref.read(globalPostNotifer).setPostsWithTags(_tags);
+          }
         },
+        child: Consumer(
+          builder: (BuildContext context, WidgetRef ref, Widget? child) {
+            var posts = ref.watch(globalPostNotifer).posts;
+
+            return Builder(
+              builder: (BuildContext context) {
+                return ListView(
+                  padding: const EdgeInsets.only(
+                    bottom: 8,
+                    left: 16,
+                    right: 16,
+                    top: 8,
+                  ),
+                  children: [
+                    Builder(builder: (context) {
+                      if (_tags.isEmpty) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Wrap(alignment: WrapAlignment.start, children: [
+                        ..._tags
+                            .map(
+                              (e) => Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: FilterChip(
+                                  label: Text(e),
+                                  selected: true,
+                                  onSelected: (bool value) {
+                                    setState(() {
+                                      _tags.remove(e);
+
+                                      if (_tags.isNotEmpty) {
+                                        ref
+                                            .read(globalPostNotifer)
+                                            .setPostsWithTags(_tags);
+                                      } else {
+                                        ref.read(globalPostNotifer).setPosts();
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                            )
+                            .toList()
+                      ]);
+                    }),
+                    ...posts
+                        .map(
+                          (e) => PostCard(post: e),
+                        )
+                        .toList()
+                  ],
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

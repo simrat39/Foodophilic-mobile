@@ -100,7 +100,7 @@ class _PostPageState extends ConsumerState<PostPage> {
                     var pp = ref.watch(postProvider);
 
                     Widget uploadButton = Padding(
-                      padding: const EdgeInsets.only(right: 20.0, bottom: 20),
+                      padding: const EdgeInsets.only(right: 12.0, bottom: 12),
                       child: OutlinedButton(
                         onPressed: () async {
                           final XFile? image = await _picker.pickImage(
