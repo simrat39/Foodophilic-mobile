@@ -48,7 +48,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {
-                            return const Profile();
+                            var uP = ref.read(userProvider);
+                            return Profile(
+                              uid: uP.uid,
+                              user: uP.user,
+                              isOwner: true,
+                            );
                           },
                         ),
                       ),

@@ -34,7 +34,10 @@ class _PostPageState extends ConsumerState<PostPage> {
         'images': pp.images.map((e) => e.name),
       },
       'userID': ref.read(userProvider).uid,
-      'user': {},
+      'user': {
+        'userName': ref.read(userProvider).user.userName,
+        'firstName': ref.read(userProvider).user.firstName,
+      },
     });
   }
 

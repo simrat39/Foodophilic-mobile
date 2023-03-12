@@ -1,6 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:food_social_media/model/Post.dart';
+import 'package:food_social_media/pages/profile.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -18,10 +19,25 @@ class PostCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  foregroundImage: Image.asset(
-                    'assets/pfp.png',
-                  ).image,
+                InkWell(
+                  onTap: () => {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return Profile(
+                            uid: post.userID,
+                            user: post.user,
+                            isOwner: false,
+                          );
+                        },
+                      ),
+                    ),
+                  },
+                  child: CircleAvatar(
+                    foregroundImage: Image.asset(
+                      'assets/pfp.png',
+                    ).image,
+                  ),
                 ),
                 const SizedBox(
                   width: 15,
@@ -30,14 +46,14 @@ class PostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Linus Tech Tips",
+                      post.user.userName,
                       style: Theme.of(context)
                           .textTheme
                           .titleSmall!
                           .copyWith(fontSize: 17, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "3h Ago",
+                      "${DateTime.now().difference(post.postDate).inMinutes}m ago",
                       style: Theme.of(context)
                           .textTheme
                           .labelSmall!
@@ -72,7 +88,9 @@ class PostCard extends StatelessWidget {
                     }
                     return const SizedBox(
                       height: 200,
-                      child: Center(child: CircularProgressIndicator(),),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     );
                   },
                 ),

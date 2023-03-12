@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:food_social_media/main.dart';
 import 'package:food_social_media/model/Post.dart';
+import 'package:food_social_media/model/User.dart';
 import 'package:food_social_media/post_card.dart';
 import 'package:food_social_media/services/post_service.dart';
 
 class Profile extends ConsumerStatefulWidget {
-  const Profile({super.key});
+  final String uid;
+  final User user;
+  final bool isOwner;
+
+  const Profile({
+    super.key,
+    required this.uid,
+    required this.user,
+    required this.isOwner,
+  });
 
   @override
   ConsumerState<Profile> createState() => _ProfileState();
@@ -15,12 +24,9 @@ class Profile extends ConsumerStatefulWidget {
 class _ProfileState extends ConsumerState<Profile> {
   @override
   Widget build(BuildContext context) {
-    var uP = ref.read(userProvider);
-    var user = uP.user;
-
     return Scaffold(
       body: FutureBuilder(
-        future: PostService.getPostsForUser(uP.uid),
+        future: PostService.getPostsForUser(widget.uid),
         builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
           if (snapshot.hasData) {
             return ListView(
@@ -78,6 +84,7 @@ class _ProfileState extends ConsumerState<Profile> {
                                   ).image,
                                 ),
                               ),
+                              if (widget.isOwner)
                               OutlinedButton(
                                 onPressed: () {
                                   debugPrint("ha");
@@ -104,7 +111,7 @@ class _ProfileState extends ConsumerState<Profile> {
                         top: 6,
                       ),
                       child: Text(
-                        user.firstName,
+                        widget.user.firstName,
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             fontSize: 30, fontWeight: FontWeight.bold),
                       ),
@@ -114,7 +121,7 @@ class _ProfileState extends ConsumerState<Profile> {
                         left: 18,
                       ),
                       child: Text(
-                        "@${user.userName}",
+                        "@${widget.user.userName}",
                         style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             fontSize: 14, fontWeight: FontWeight.w300),
                       ),
