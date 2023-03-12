@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "63956904600",
+    "project_id": "foodophilic-13a30",
+    "storage_bucket": "foodophilic-13a30.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63956904600:android:aa3fdefb6855edd9c53eed",
+        "android_client_info": {
+          "package_name": "com.example.food_social_media"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63956904600-od85snjlclbui6bu60rbqh2sob3s42hg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZQQFiWGMjqLrjAdKt8qfAxmcGcLSCeQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63956904600-od85snjlclbui6bu60rbqh2sob3s42hg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
