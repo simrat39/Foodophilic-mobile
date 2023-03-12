@@ -1,127 +1,63 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_social_media/firebase_options.dart';
-import 'package:food_social_media/pages/post_page.dart';
-import 'package:food_social_media/pages/profile.dart';
-import 'package:food_social_media/post_card.dart';
+import 'package:food_social_media/login.dart';
+import 'package:food_social_media/providers/global_post_created_notifer.dart';
+import 'package:food_social_media/providers/user_provider.dart';
+
+var globalPostNotifer = ChangeNotifierProvider((ref) => GlobalPostProvider());
+var userProvider = ChangeNotifierProvider((ref) => UserProvider());
 
 void main() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+void initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData.dark(useMaterial3: true).copyWith(
-        useMaterial3: true,
-        cardTheme: CardTheme(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future _firebaseInitFuture;
+
+  @override
+  void initState() {
+    _firebaseInitFuture = Future(initializeFirebase);
+    super.initState();
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    child: CircleAvatar(
-                      foregroundImage: Image.asset(
-                        'assets/pfp.png',
-                      ).image,
-                    ),
-                    onTap: () => {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const Profile();
-                          },
-                        ),
-                      ),
-                    },
+    return ProviderScope(
+      child: FutureBuilder(
+        future: _firebaseInitFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              title: 'Flutter Demo',
+              theme: ThemeData.dark(useMaterial3: true).copyWith(
+                useMaterial3: true,
+                cardTheme: CardTheme(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  Text(widget.title),
-                  IconButton(
-                      onPressed: () => {}, icon: const Icon(Icons.search)),
-                ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 8, left: 16, right: 16, top: 8),
-        children: [
-          for (var i = 0; i < 4; i++) const PostCard(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            isScrollControlled: true,
-            builder: (context) {
-              return const PostPage();
-            },
-          );
+              debugShowCheckedModeBanner: false,
+              home: LoginPage(),
+            );
+          }
+          return Container();
         },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(
-              Icons.home,
-            ),
-            label: "Home",
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.emoji_food_beverage,
-            ),
-            label: "Restaurants",
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.book,
-            ),
-            label: "Recipes",
-          ),
-        ],
       ),
     );
   }

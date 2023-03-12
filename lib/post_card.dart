@@ -1,13 +1,12 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:food_social_media/model/Post.dart';
 
-class PostCard extends StatefulWidget {
-  const PostCard({super.key});
+class PostCard extends StatelessWidget {
+  final Post post;
 
-  @override
-  State<PostCard> createState() => _PostCardState();
-}
+  const PostCard({super.key, required this.post});
 
-class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -51,20 +50,39 @@ class _PostCardState extends State<PostCard> {
             const SizedBox(
               height: 15,
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: Image.asset(
-                'assets/pasta.jpeg',
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
+            Builder(builder: (context) {
+              if (post.images.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: FutureBuilder(
+                  future: FirebaseStorage.instance
+                      .ref(post.images.first)
+                      .getDownloadURL(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.hasData) {
+                      return Image.network(
+                        snapshot.data!,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      );
+                    }
+                    return const SizedBox(
+                      height: 200,
+                      child: Center(child: CircularProgressIndicator(),),
+                    );
+                  },
+                ),
+              );
+            }),
             const SizedBox(
               height: 13,
             ),
             Text(
-              '''Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.''',
+              post.text,
               style: Theme.of(context)
                   .textTheme
                   .bodySmall!
@@ -75,15 +93,18 @@ class _PostCardState extends State<PostCard> {
             ),
             Wrap(
               direction: Axis.horizontal,
-              children: [
-                for (var i = 0; i < 4; i++)
-                  const Padding(
-                    padding: EdgeInsets.only(right: 12.0),
-                    child: Chip(
-                      label: Text("Tag"),
+              children: post.tags
+                  .map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: Chip(
+                        label: Text(e),
+                      ),
                     ),
-                  ),
-              ],
+                  )
+                  .toList(),
+              // [
+              // ],
             )
           ],
         ),
